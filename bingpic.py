@@ -9,9 +9,11 @@
 #Imports
 import os
 import sys
+import platform
 import subprocess
 import shutil
 import urllib
+import ctypes
 from urllib2 import urlopen
 from time import strftime
 from xml.dom.minidom import parseString
@@ -19,7 +21,7 @@ from xml.dom.minidom import parseString
 # Official Bing Image of the Day RSS feed
 feed = 'http://www.bing.com/HPImageArchive.aspx?format=rss&idx=0&n=1&mkt=en-US'
 
-# Mac directory to store the image
+# Directory to store the image
 directory = os.path.expanduser('~/Pictures/BingImage/')
 
 APPLESCRIPT = """/usr/bin/osascript<<END
@@ -85,6 +87,10 @@ def parseFeed(feedToParse):
 def changeMacBackground(imagePath):
     # Have osascript execute the AppleScript
     subprocess.Popen(APPLESCRIPT%imagePath, shell=True)
+
+def changeWinBackground(imagePath):
+    SPI_SETDESKWALLPAPER = 20
+    ctypes.windll.user32.SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, imagePath, 0)
 
 def main():
     # Empty ~/$pictures/BingImage/
